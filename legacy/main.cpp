@@ -10,11 +10,14 @@
 
 #include <exception>
 
-#define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 480
+//#define WINDOW_WIDTH 640
+//#define WINDOW_HEIGHT 480
 
 int main(int argc, char *argv[])
 {
+	int windowWidth = 640;
+	int windowHeight = 480;
+
   if(SDL_Init(SDL_INIT_VIDEO) < 0)
   {
     throw std::exception();
@@ -22,7 +25,7 @@ int main(int argc, char *argv[])
 
   SDL_Window *window = SDL_CreateWindow("Triangle",
     SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-    WINDOW_WIDTH, WINDOW_HEIGHT,
+    windowWidth, windowHeight,
     SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 
   if(!SDL_GL_CreateContext(window))
@@ -35,7 +38,7 @@ int main(int argc, char *argv[])
     throw std::exception();
   }
 
-  VertexBuffer *positions = new VertexBuffer();
+  /*VertexBuffer *positions = new VertexBuffer();
   positions->add(glm::vec3(0.0f, 0.5f, 0.0f));
   positions->add(glm::vec3(-0.5f, -0.5f, 0.0f));
   positions->add(glm::vec3(0.5f, -0.5f, 0.0f));
@@ -47,7 +50,7 @@ int main(int argc, char *argv[])
 
   VertexArray *shape = new VertexArray();
   shape->SetBuffer("in_Position", positions);
-  shape->SetBuffer("in_TexCoord", texCoords);
+  shape->SetBuffer("in_TexCoord", texCoords);*/
 
   ShaderProgram *shader = new ShaderProgram("../shaders/simple.vert", "../shaders/simple.frag");
   VertexArray *hallShape = new VertexArray("../object/re_hall_baked.obj");
@@ -72,13 +75,14 @@ int main(int argc, char *argv[])
       }
     }
 
-	SDL_GetWindowSize(window, WIND)
-    glClearColor(0.0f, 0.0f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+	glViewport(0, 0, windowWidth, windowHeight);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Draw with perspective projection matrix
     shader->SetUniform("in_Projection", glm::perspective(glm::radians(45.0f),
-     (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.f));
+     (float)windowWidth / (float)windowHeight, 0.1f, 100.f));
 
     glm::mat4 model(1.0f);
     model = glm::translate(model, glm::vec3(0, 0, -2.5f));
@@ -90,10 +94,10 @@ int main(int argc, char *argv[])
     // Draw with orthographic projection matrix
 
     shader->SetUniform("in_Projection", glm::ortho(0.0f,
-     (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f));
+     (float)windowWidth, 0.0f, (float)windowHeight, 0.0f, 1.0f));
 
     model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(100, WINDOW_HEIGHT - 100, 0));
+    model = glm::translate(model, glm::vec3(100, windowHeight - 100, 0));
     model = glm::scale(model, glm::vec3(100, 100, 1));
     shader->SetUniform("in_Model", model);
     shader->draw(shape);
