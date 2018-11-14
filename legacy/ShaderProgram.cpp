@@ -1,5 +1,11 @@
 #include "ShaderProgram.h"
 #include "VertexArray.h"
+#include "Texture.h"
+
+#include <glm/ext.hpp>
+
+#include <fstream>
+#include <iostream>
 
 ShaderProgram::ShaderProgram()
 {
@@ -89,7 +95,7 @@ ShaderProgram::ShaderProgram(std::string vert, std::string frag)
 	std::string vertShader;
 	std::string fragShader;
 
-	std::ifstream file(vert);
+	std::ifstream file(vert.c_str());
 
 	if (!file.is_open())
 	{
@@ -151,8 +157,13 @@ ShaderProgram::ShaderProgram(std::string vert, std::string frag)
 	glAttachShader(id, fragmentShaderId);
 
 	glBindAttribLocation(id, 0, "in_Position");
+	glBindAttribLocation(id, 1, "in_TexCoord");
+	glBindAttribLocation(id, 2, "in_Normal");
 
-	glBindAttribLocation(id, 1, "in_Texture");
+	if (glGetError() != GL_NO_ERROR)
+	{
+		throw std::exception();
+	}
 
 	glLinkProgram(id);
 	success = 0;
@@ -178,7 +189,27 @@ void ShaderProgram::draw(VertexArray * vertexArray)
 	glUseProgram(id);
 	glBindVertexArray(vertexArray->GetId());
 
+	for (size_t i = 0; i < samplers.size(); i++)
+	{
+		glActiveTexture(GL_TEXTURE0 + i);
+
+		if (samplers.at(i).texture)
+		{
+			glBindTexture(GL_TEXTURE_2D, samplers.at(i).texture->getId());
+		}
+		else
+		{
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+	}
+
 	glDrawArrays(GL_TRIANGLES, 0, vertexArray->GetVertexCount());
+
+	for (size_t i = 0; i < samplers.size(); i++)
+	{
+		glActiveTexture(GL_TEXTURE0 + i);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 
 	glBindVertexArray(0);
 	glUseProgram(0);
@@ -236,6 +267,37 @@ void ShaderProgram::SetUniform(std::string uniform, float value)
 
 	glUseProgram(id);
 	glUniform1f(uniformId, value);
+	glUseProgram(0);
+}
+void ShaderProgram::SetUniform(std::string uniform, Texture *texture)
+{
+	GLint uniformId = glGetUniformLocation(id, uniform.c_str());
+
+	if (uniformId == -1)
+	{
+		throw std::exception();
+	}
+
+	for (size_t i = 0; i < samplers.size(); i++)
+	{
+		if (samplers.at(i).id == uniformId)
+		{
+			samplers.at(i).texture = texture;
+
+			glUseProgram(id);
+			glUniform1i(uniformId, i);
+			glUseProgram(0);
+			return;
+		}
+	}
+
+	Sampler s;
+	s.id = uniformId;
+	s.texture = texture;
+	samplers.push_back(s);
+
+	glUseProgram(id);
+	glUniform1i(uniformId, samplers.size() - 1);
 	glUseProgram(0);
 }
 

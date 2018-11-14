@@ -14,15 +14,15 @@ Texture::Texture(std::string path)
 		throw std::exception();
 	}
 
-	GLuint textureId = 0;
-	glGenTextures(1, &textureId);
+	id = 0;
+	glGenTextures(1, &id);
 
-	if (!textureId)
+	if (!id)
 	{
 		throw std::exception();
 	}
 
-	glBindTexture(GL_TEXTURE_2D, textureId);
+	glBindTexture(GL_TEXTURE_2D, id);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 

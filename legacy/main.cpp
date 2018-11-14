@@ -61,7 +61,8 @@ int main(int argc, char *argv[])
   bool quit = false;
   float angle = 0;
 
-  //glEnable(GL_CULL_FACE);
+  glEnable(GL_CULL_FACE);
+  glEnable(GL_DEPTH_TEST);
 
   while(!quit)
   {
@@ -84,11 +85,16 @@ int main(int argc, char *argv[])
     shader->SetUniform("in_Projection", glm::perspective(glm::radians(45.0f),
      (float)windowWidth / (float)windowHeight, 0.1f, 100.f));
 
-    glm::mat4 model(1.0f);
-    model = glm::translate(model, glm::vec3(0, 0, -2.5f));
+	//Camera
+	/*glm::mat4 model(1.0f);
+	model = glm::rotate(model, glm::radians(angle), glm::vec3(0, 1, 0));
+	shader->SetUniform("in_View", glm::inverse(model));*/
+
+    glm::mat4 model (1.0f);
+    model = glm::translate(model, glm::vec3(0, 0, -12.5f));
     model = glm::rotate(model, glm::radians(angle), glm::vec3(0, 1, 0));
-	shader->SetUniform("in_Texture", 1);
     shader->SetUniform("in_Model", model);
+	shader->SetUniform("in_Texture", texture);
     shader->draw(shape);
 
     // Draw with orthographic projection matrix
