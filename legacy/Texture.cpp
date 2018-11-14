@@ -7,7 +7,7 @@ Texture::Texture(std::string path)
 	int h = 0;
 	int channels = 0;
 
-	unsigned char *data = stbi_load("../textures/image.png", &w, &h, &channels, 4);
+	unsigned char *data = stbi_load(path.c_str(), &w, &h, &channels, 4);
 
 	if (!data)
 	{
