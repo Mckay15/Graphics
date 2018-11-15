@@ -21,6 +21,9 @@ private:
 public:
 	ShaderProgram();
 
+	void printShaderInfoLog(GLuint obj);
+	void printProgramInfoLog(GLuint obj);
+
 	ShaderProgram(std::string vert, std::string frag);
 
 	void draw(VertexArray *vertexArray);
@@ -28,6 +31,7 @@ public:
 	void SetUniform(std::string uniform, glm::mat4 value);
 	void SetUniform(std::string uniform, int value);
 	void SetUniform(std::string uniform, glm::vec4 value);
+	void SetUniform(std::string uniform, glm::vec3 value);
 	void SetUniform(std::string uniform, float value);
 	void SetUniform(std::string uniform, Texture *texture);
 

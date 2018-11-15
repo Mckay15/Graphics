@@ -85,6 +85,10 @@ int main(int argc, char *argv[])
     shader->SetUniform("in_Projection", glm::perspective(glm::radians(45.0f),
      (float)windowWidth / (float)windowHeight, 0.1f, 100.f));
 
+	//lighting
+	shader->SetUniform("in_Emissive", glm::vec3(0, 0, 0));
+	shader->SetUniform("in_Ambient", glm::vec3(0.2, 0.2, 0.2));
+
 	//Camera
 	/*glm::mat4 model(1.0f);
 	model = glm::rotate(model, glm::radians(angle), glm::vec3(0, 1, 0));

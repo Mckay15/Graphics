@@ -1,7 +1,11 @@
 attribute vec3 in_Position;
 attribute vec2 in_TexCoord;
+
+
 uniform mat4 in_Projection;
 uniform mat4 in_Model;
+
+
 
 varying vec2 ex_TexCoord;
 	  
