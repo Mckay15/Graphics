@@ -293,9 +293,11 @@ void ShaderProgram::SetUniform(std::string uniform, glm::vec4 value)
 void ShaderProgram::SetUniform(std::string uniform, glm::vec3 value)
 {
 	GLint uniformId = glGetUniformLocation(id, uniform.c_str());
-
+	
 	if (uniformId == -1)
 	{
+		printShaderInfoLog(uniformId);
+		printProgramInfoLog(uniformId);
 		throw std::exception();
 	}
 
