@@ -89,6 +89,7 @@ int main(int argc, char *argv[])
 	shader->SetUniform("in_Emissive", glm::vec3(0, 0, 0));
 	shader->SetUniform("in_Ambient", glm::vec3(0.2, 0.2, 0.2));
 	shader->SetUniform("in_LightPos", glm::vec3(50, 10, 10));
+
 	//Camera
 	/*glm::mat4 model(1.0f);
 	model = glm::rotate(model, glm::radians(angle), glm::vec3(0, 1, 0));

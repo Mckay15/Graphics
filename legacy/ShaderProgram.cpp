@@ -174,6 +174,8 @@ ShaderProgram::ShaderProgram(std::string vert, std::string frag)
 
 	if (!success)
 	{
+		printShaderInfoLog(vertexShaderId);
+		printProgramInfoLog(vertexShaderId);
 		throw std::exception();
 	}
 
@@ -184,6 +186,8 @@ ShaderProgram::ShaderProgram(std::string vert, std::string frag)
 	glGetShaderiv(fragmentShaderId, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
+		printShaderInfoLog(fragmentShaderId);
+		printProgramInfoLog(fragmentShaderId);
 		throw std::exception();
 	}
 	id = glCreateProgram();
