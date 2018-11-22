@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
 
     //glm::mat4 model (1.0f);
     model = glm::translate(model, glm::vec3(0, 0, -12.5f));
-    model = glm::rotate(model, glm::radians(angle), glm::vec3(0, 1, 0));
+    //model = glm::rotate(model, glm::radians(angle), glm::vec3(0, 1, 0));
 	//shader->SetUniform("in_View", glm::inverse(model));
     shader->SetUniform("in_Model", model);
 	shader->SetUniform("in_Texture", texture);
@@ -108,11 +108,11 @@ int main(int argc, char *argv[])
     /*shader->SetUniform("in_Projection", glm::ortho(0.0f,
      (float)windowWidth, 0.0f, (float)windowHeight, 0.0f, 1.0f));*/
 
-    model = glm::mat4(1.0f);
+   /* model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(100, windowHeight - 100, 0));
     model = glm::scale(model, glm::vec3(100, 100, 1));
     shader->SetUniform("in_Model", model);
-    shader->draw(shape);
+    shader->draw(shape);*/
 
    // angle+=0.01f;
 
