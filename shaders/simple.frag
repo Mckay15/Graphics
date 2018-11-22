@@ -21,7 +21,7 @@ vec3 diffuse = diff * vec3(0.5,0.5,0.5);
 vec3 viewPos = vec3(inverse(in_View) * vec4(0,0,0,1));
 vec3 viewDir = normalize(viewPos - ex_FragPos);
 vec3 reflectDir = reflect(-lightDir, Norm);
-float Spec = pow(max(dot(viewDir, reflectDir), 0.0),64);
+float Spec = pow(max(dot(viewDir, reflectDir), 0.0),32);
 vec3 Specular = Spec * vec3(1,1,1);
 
 vec3 lighting = in_Emissive + in_Ambient + diffuse + Specular;

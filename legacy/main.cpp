@@ -91,14 +91,14 @@ int main(int argc, char *argv[])
 	shader->SetUniform("in_LightPos", glm::vec3(50, 10, 10));
 
 	//Camera
-	/*glm::mat4 model(1.0f);
+	glm::mat4 model(1.0f);
 	model = glm::rotate(model, glm::radians(angle), glm::vec3(0, 1, 0));
-	shader->SetUniform("in_View", glm::inverse(model));*/
+	shader->SetUniform("in_View", glm::inverse(model));
 
-    glm::mat4 model (1.0f);
+    //glm::mat4 model (1.0f);
     model = glm::translate(model, glm::vec3(0, 0, -12.5f));
     model = glm::rotate(model, glm::radians(angle), glm::vec3(0, 1, 0));
-	shader->SetUniform("in_View", glm::inverse(model));
+	//shader->SetUniform("in_View", glm::inverse(model));
     shader->SetUniform("in_Model", model);
 	shader->SetUniform("in_Texture", texture);
     shader->draw(shape);
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
     shader->SetUniform("in_Model", model);
     shader->draw(shape);
 
-    angle+=0.01f;
+   // angle+=0.01f;
 
     SDL_GL_SwapWindow(window);
   }
