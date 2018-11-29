@@ -58,6 +58,16 @@ int main(int argc, char *argv[])
   VertexArray *shape = new VertexArray("../object/curuthers.obj");
   Texture *texture = new Texture("../diffuse/curuthers_diffuse.png");
 
+  for (int a = 0; a < 3; a++)
+  {
+	  int b = a * 3;
+	  int c = b + 1;
+	  int d = c + 1;
+
+	  glm::vec3 DeltaB = hallShape[c].GetVertexCount - hallShape[b].GetVertexCount;
+
+  }
+
   bool quit = false;
   float angle = 0;
 
@@ -94,6 +104,7 @@ int main(int argc, char *argv[])
 	glm::mat4 model(1.0f);
 	model = glm::rotate(model, glm::radians(angle), glm::vec3(0, 1, 0));
 	shader->SetUniform("in_View", glm::inverse(model));
+	shader->SetUniform("in_Tangent", glm::mat4(1));
 
     //glm::mat4 model (1.0f);
     model = glm::translate(model, glm::vec3(0, 0, -12.5f));

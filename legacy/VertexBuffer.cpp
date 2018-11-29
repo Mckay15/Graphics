@@ -1,5 +1,6 @@
 #include "VertexBuffer.h"
 
+
 void VertexBuffer::add(glm::vec2 value)
 {
 	if (componets != 2 && componets != 0)

@@ -2,7 +2,9 @@ uniform sampler2D in_Texture;
 uniform vec3 in_Emissive;
 uniform vec3 in_Ambient;
 uniform vec3 in_LightPos;
-uniform mat4 in_View;
+
+uniform mat4 in_View
+uniform mat4 in_Tangent;
 
 varying vec2 ex_TexCoord;
 varying vec3 ex_FragPos;

@@ -83,6 +83,7 @@ VertexArray::VertexArray(std::string path) : dirty(false)
 	std::vector<glm::vec3> positions;
 	std::vector<glm::vec2> texCoords;
 	std::vector<glm::vec3> normals;
+	std::vector<glm::mat4> tangent;
 
 	VertexBuffer *positionBuffer = NULL;
 	VertexBuffer *texCoordBuffer = NULL;
@@ -157,7 +158,7 @@ VertexArray::VertexArray(std::string path) : dirty(false)
 
 	SetBuffer("in_Position", positionBuffer);
 	if (texCoordBuffer) SetBuffer("in_TexCoord", texCoordBuffer);
-	if (normalBuffer) SetBuffer("in_Normal", normalBuffer);
+	if (normalBuffer) SetBuffer("in_Normal", normalBuffer);	
 }
 
 void VertexArray::SetBuffer(std::string attribute, VertexBuffer* buffer)

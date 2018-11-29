@@ -123,7 +123,6 @@ void ShaderProgram::printProgramInfoLog(GLuint obj)
 	}
 }
 
-
 ShaderProgram::ShaderProgram(std::string vert, std::string frag)
 {
 	std::string vertShader;

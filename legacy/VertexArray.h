@@ -23,6 +23,8 @@ public:
 
 	void SetBuffer(std::string sttribute, VertexBuffer* buffer);
 
+
+	void Tangent();
 	int GetVertexCount();
 	GLuint GetId();
 
