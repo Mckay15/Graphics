@@ -83,11 +83,15 @@ VertexArray::VertexArray(std::string path) : dirty(false)
 	std::vector<glm::vec3> positions;
 	std::vector<glm::vec2> texCoords;
 	std::vector<glm::vec3> normals;
-	std::vector<glm::mat4> tangent;
+	std::vector<glm::vec3> tangent;
+	std::vector<glm::vec3> BiTangent;
 
 	VertexBuffer *positionBuffer = NULL;
 	VertexBuffer *texCoordBuffer = NULL;
 	VertexBuffer *normalBuffer = NULL;
+	VertexBuffer *tangentBuffer = NULL;
+	VertexBuffer *BiTangentBuffer = NULL;
+
 
 	while (!file.eof())
 	{
@@ -104,6 +108,9 @@ VertexArray::VertexArray(std::string path) : dirty(false)
 				atof(splitLine.at(1).c_str()),
 				atof(splitLine.at(2).c_str()),
 				atof(splitLine.at(3).c_str())));
+			/*V1 = atof(splitLine.at(1).c_str());
+			V2 = atof(splitLine.at(2).c_str());
+			V3 = atof(splitLine.at(3).c_str());*/
 		}
 		else if (splitLine.at(0) == "vt")
 		{
@@ -112,6 +119,8 @@ VertexArray::VertexArray(std::string path) : dirty(false)
 			texCoords.push_back(glm::vec2(
 				atof(splitLine.at(1).c_str()),
 				1.0f - atof(splitLine.at(2).c_str())));
+			/*U = atof(splitLine.at(1).c_str());
+			V = 1.0f - atof(splitLine.at(2).c_str());*/
 		}
 		else if (splitLine.at(0) == "vn")
 		{
@@ -156,9 +165,35 @@ VertexArray::VertexArray(std::string path) : dirty(false)
 		}
 	}
 
+	for (int x = 0; x < positions.size() - 1; x += 3)
+	{
+		V1 = positions[x];
+		V2 = positions[x + 1];
+		V3 = positions[x + 2];
+
+		UV1 = texCoords[x];
+		UV2 = texCoords[x + 1];
+		UV3 = texCoords[x + 2];
+
+		glm::vec3 deltaPos1 = V2 - V1;
+		glm::vec3 deltaPos2 = V3 - V1;
+
+		glm::vec2 deltaUV1 = UV2 - UV1;
+		glm::vec2 deltaUV2 = UV3 - UV1;
+
+		float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+		glm::vec3 Tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y)*r;
+		glm::vec3 Bi = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x)*r;
+
+		tangent.push_back(Tangent);
+		BiTangent.push_back(Bi);
+	}
+
 	SetBuffer("in_Position", positionBuffer);
 	if (texCoordBuffer) SetBuffer("in_TexCoord", texCoordBuffer);
 	if (normalBuffer) SetBuffer("in_Normal", normalBuffer);	
+	if (tangentBuffer) SetBuffer("in_Tangent", tangentBuffer);
+	if (BiTangentBuffer) SetBuffer("in_BiTangent", BiTangentBuffer);
 }
 
 void VertexArray::SetBuffer(std::string attribute, VertexBuffer* buffer)
@@ -174,6 +209,14 @@ void VertexArray::SetBuffer(std::string attribute, VertexBuffer* buffer)
 	else if (attribute == "in_Normal")
 	{
 		buffers.at(2) = buffer;
+	}
+	else if (attribute == "in_Tangent")
+	{
+		buffers.at(3) = buffer;
+	}
+	else if (attribute == "in_BiTangent")
+	{
+		buffers.at(4) = buffer;
 	}
 	else
 	{

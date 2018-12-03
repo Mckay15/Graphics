@@ -196,6 +196,8 @@ ShaderProgram::ShaderProgram(std::string vert, std::string frag)
 	glBindAttribLocation(id, 0, "in_Position");
 	glBindAttribLocation(id, 1, "in_TexCoord");
 	glBindAttribLocation(id, 2, "in_Normal");
+	glBindAttribLocation(id, 3, "in_Tangent");
+	glBindAttribLocation(id, 4, "in_BiTangent");
 
 	if (glGetError() != GL_NO_ERROR)
 	{

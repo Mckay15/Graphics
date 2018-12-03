@@ -5,6 +5,7 @@
 
 class Texture
 {
+
 private:
 	GLuint id;
 	glm::vec2 size;
