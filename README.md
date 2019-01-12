@@ -1,2 +1,0 @@
-# Graphics
-3DGraphics

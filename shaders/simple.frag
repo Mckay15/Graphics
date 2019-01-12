@@ -22,13 +22,13 @@ void main()
 
 	vec3 TexNorm_Tan = normalize(texture2D(in_NormalMap, ex_TexCoord).rgb * 2 - 1);
 
-	float diff = clamp(dot(TexNorm_Tan, lightDir), 0,1);
-	vec3 Diffuse = diff * vec3(1,1,1);
+	float diff = max(dot(Norm, lightDir), 0.0);
+	vec3 Diffuse = diff * vec3(0.5,0.5,0.5);
 
 	vec3 viewPos = vec3(inverse(in_View) * vec4(0,0,0,1));
 	vec3 viewDir = normalize(viewPos - ex_FragPos);
 	vec3 reflectDir = reflect(-lightDir, Norm);
-	float Spec = pow(max(dot((viewDir), reflectDir), 0.0),16);
+	float Spec = pow(max(dot(viewDir, reflectDir), 0.0),16);
 	vec3 Specular = Spec * vec3(1,1,1);
 
 	vec3 lighting =  in_Emissive + in_Ambient + Diffuse + Specular;

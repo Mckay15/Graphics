@@ -2,6 +2,7 @@
 #include "VertexArray.h"
 #include "ShaderProgram.h"
 #include "Texture.h"
+#include "GameObject.h"
 
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
@@ -17,6 +18,11 @@ int main(int argc, char *argv[])
 {
 	int windowWidth = 640;
 	int windowHeight = 480;
+	bool LeftKey = false;
+	bool RightKey = false;
+	float X_Movement = 0.0f;
+	double time = 0.0;
+	double deltaT = 1.0 / 60.0;
 
   if(SDL_Init(SDL_INIT_VIDEO) < 0)
   {
@@ -54,6 +60,10 @@ int main(int argc, char *argv[])
 
   ShaderProgram *shader = new ShaderProgram("../shaders/simple.vert", "../shaders/simple.frag");
   VertexArray *hallShape = new VertexArray("../object/re_hall_baked.obj");
+  GameObject *Car = new GameObject("../diffuse/Car_Texture.png","../object/Car.obj");
+  GameObject *Box = new GameObject("../textures/box.png", "../object/box.obj");
+ // VertexArray *car = new VertexArray("../object/Car.obj");
+ // Texture *carTexture = new Texture("../diffuse/Car_Texture.png");
   Texture *hallTexture = new Texture("../diffuse/re_hall_diffuse.png");
   VertexArray *shape = new VertexArray("../object/curuthers.obj");
   Texture *texture = new Texture("../diffuse/curuthers_diffuse.png");
@@ -75,6 +85,44 @@ int main(int argc, char *argv[])
       {
         quit = true;
       }
+	  switch (event.type)
+	  {
+	  case SDL_KEYDOWN :
+		  if (event.key.keysym.sym == SDLK_LEFT)
+		  {
+			  LeftKey = true;
+		  }
+		  if (event.key.keysym.sym == SDLK_RIGHT)
+		  {
+			  RightKey = true;
+		  }
+	  break;
+	  case SDL_KEYUP :
+		  LeftKey = false;
+		  RightKey = false;
+	  break;
+	  default:
+		  break;
+	  }
+	 /* if (SDL_KEYDOWN)
+	  {
+		  if (event.key.keysym.sym == SDLK_LEFT)
+		  {
+			  LeftKey = true;
+		  }
+	  }
+	  else if (SDL_KEYUP)
+	  {
+		  LeftKey = false;
+	  }
+	  if (event.key.keysym.sym == SDLK_RIGHT)
+	  {
+		  RightKey = true;
+	  }
+	  else
+	  {
+		  RightKey = false;
+	  }*/
     }
 
 	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
@@ -87,25 +135,44 @@ int main(int argc, char *argv[])
      (float)windowWidth / (float)windowHeight, 0.1f, 100.f));
 
 	//lighting
-	shader->SetUniform("in_Emissive", glm::vec3(0, 0, 0));
+	shader->SetUniform("in_Emissive", glm::vec3(0.1, 0.1, 0.1));
 	shader->SetUniform("in_Ambient", glm::vec3(0.2, 0.2, 0.2));
 	shader->SetUniform("in_LightPos", glm::vec3(50, 10, 10));
 
 	//Camera
 	glm::mat4 model(1.0f);
 	shader->SetUniform("in_View", glm::inverse(model));
-//	shader->SetUniform("in_Tangent", glm::mat4(1));
-
+  //  shader->SetUniform("in_Tangent", glm::mat4(1));
     //glm::mat4 model (1.0f);
-    model = glm::translate(model, glm::vec3(0, 0, -8.5f));
+    model = glm::translate(model, glm::vec3(0, -2.0f, -8.5f));
+	Car->Movement(glm::vec3(0, -2.0f, -8.5f));
+	if (LeftKey == true && X_Movement > -2.7f)
+	{
+		X_Movement -= 0.1f * deltaT;
+	}
+	if (RightKey == true && X_Movement < 2.7)
+	{
+		X_Movement += 0.1f * deltaT;
+	}
+	Car->Movement(glm::vec3(X_Movement, 0.0f, 0.0f));
+	//model = glm::translate(model, glm::vec3(X_Movement, 0.0f, 0.0f));
 	//model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
-	model = glm::rotate(model, glm::radians(angle), glm::vec3(0, 1, 0));
+	//model = glm::rotate(model, glm::radians(angle), glm::vec3(0, 1, 0));
     //model = glm::rotate(model, glm::radians(angle), glm::vec3(0, 1, 0));
-	//shader->SetUniform("in_View", glm::inverse(model));
-    shader->SetUniform("in_Model", model);
-	shader->SetUniform("in_Texture", texture);
-	shader->SetUniform("in_NormalMap", normal);
-    shader->draw(shape);
+    shader->SetUniform("in_Model", Car->GetModel());
+	shader->SetUniform("in_Texture", Car->GetTexture());
+	shader->draw(Car->GetVAO());
+
+	//shader->SetUniform("in_View", glm::inverse(Box->GetModel()));
+	Box->Movement(glm::vec3(0, -2.0f, -8.5f));
+	shader->SetUniform("in_Model", Box->GetModel());
+	shader->SetUniform("in_Texture", Box->GetTexture());
+	shader->draw(Box->GetVAO());
+	//shader->SetUniform("in_NormalMap", normal);
+   // shader->draw(shape);
+//	model = glm::translate(model, glm::vec3(0, 0, -8.5f));
+	
+
 
     // Draw with orthographic projection matrix
 
@@ -121,6 +188,9 @@ int main(int argc, char *argv[])
     angle+=0.01f;
 
     SDL_GL_SwapWindow(window);
+	time += deltaT;
+	Car->Reset();
+	Box->Reset();
   }
 
   SDL_DestroyWindow(window);

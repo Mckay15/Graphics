@@ -165,11 +165,12 @@ VertexArray::VertexArray(std::string path) : dirty(false)
 		}
 	}
 
-	for (int x = 0; x < positions.size() - 1; x += 3)
+	SetBuffer("in_Position", positionBuffer);
+	/*for (int x = 0; x < texCoords.size() - 1; x += 3)
 	{
 		V1 = positions[x];
 		V2 = positions[x + 1];
-		V3 = positions[x + 2];
+		V3 = positions[x + 2];    // for TBN
 
 		UV1 = texCoords[x];
 		UV2 = texCoords[x + 1];
@@ -187,9 +188,7 @@ VertexArray::VertexArray(std::string path) : dirty(false)
 
 		tangent.push_back(Tangent);
 		BiTangent.push_back(Bi);
-	}
-
-	SetBuffer("in_Position", positionBuffer);
+	}*/
 	if (texCoordBuffer) SetBuffer("in_TexCoord", texCoordBuffer);
 	if (normalBuffer) SetBuffer("in_Normal", normalBuffer);	
 	if (tangentBuffer) SetBuffer("in_Tangent", tangentBuffer);
