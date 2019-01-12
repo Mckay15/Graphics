@@ -163,6 +163,7 @@ int main(int argc, char *argv[])
 	shader->SetUniform("in_Texture", Car->GetTexture());
 	shader->draw(Car->GetVAO());
 
+
 	//shader->SetUniform("in_View", glm::inverse(Box->GetModel()));
 	Box->Movement(glm::vec3(0, -2.0f, -8.5f));
 	shader->SetUniform("in_Model", Box->GetModel());
