@@ -16,6 +16,7 @@
 
 int main(int argc, char *argv[])
 {
+	int HitCount = 0;
 	int windowWidth = 640;
 	int windowHeight = 480;
 	bool LeftKey = false;
@@ -23,6 +24,7 @@ int main(int argc, char *argv[])
 	float X_Movement = 0.0f;
 	double time = 0.0;
 	double deltaT = 1.0 / 60.0;
+	double Z_Movement = 0.0;
 
   if(SDL_Init(SDL_INIT_VIDEO) < 0)
   {
@@ -68,6 +70,14 @@ int main(int argc, char *argv[])
   VertexArray *shape = new VertexArray("../object/curuthers.obj");
   Texture *texture = new Texture("../diffuse/curuthers_diffuse.png");
   Texture *normal = new Texture("../diffuse/curuthers_normal.png");
+
+  std::vector <GameObject*> Boxes;
+  glm::mat4 BoxCoords[2] = { glm::mat4(1.0), glm::mat4(1.0) };
+
+  BoxCoords[0] = glm::translate(BoxCoords[0], glm::vec3(0, -2.0f, -8.5f));
+  BoxCoords[1] = glm::translate(BoxCoords[1], glm::vec3( 0, -2.0f, -18.5f ));
+
+  Boxes.push_back(Box);
 
   bool quit = false;
   float angle = 0;
@@ -146,6 +156,7 @@ int main(int argc, char *argv[])
     //glm::mat4 model (1.0f);
     model = glm::translate(model, glm::vec3(0, -2.0f, -8.5f));
 	Car->Movement(glm::vec3(0, -2.0f, -8.5f));
+	Box->Movement(glm::vec3(0, -2.0f, -18.5f));
 	if (LeftKey == true && X_Movement > -2.7f)
 	{
 		X_Movement -= 0.1f * deltaT;
@@ -154,6 +165,7 @@ int main(int argc, char *argv[])
 	{
 		X_Movement += 0.1f * deltaT;
 	}
+	Z_Movement += 0.05 * deltaT;
 	Car->Movement(glm::vec3(X_Movement, 0.0f, 0.0f));
 	//model = glm::translate(model, glm::vec3(X_Movement, 0.0f, 0.0f));
 	//model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
@@ -163,17 +175,26 @@ int main(int argc, char *argv[])
 	shader->SetUniform("in_Texture", Car->GetTexture());
 	shader->draw(Car->GetVAO());
 
-
+	
 	//shader->SetUniform("in_View", glm::inverse(Box->GetModel()));
-	Box->Movement(glm::vec3(0, -2.0f, -8.5f));
+	Box->Movement(glm::vec3(0, 0.0f, Z_Movement));
 	shader->SetUniform("in_Model", Box->GetModel());
 	shader->SetUniform("in_Texture", Box->GetTexture());
 	shader->draw(Box->GetVAO());
 	//shader->SetUniform("in_NormalMap", normal);
    // shader->draw(shape);
 //	model = glm::translate(model, glm::vec3(0, 0, -8.5f));
-	
 
+	for (int i = 0; i < Boxes.size(); i++)
+	{
+		if (Boxes[i]->GetModel()[3].z <= -7.5f && Boxes[i]->GetModel()[3].z >= -9.5f)
+		{
+			if (Boxes[i]->GetModel()[3].x >= Car->GetModel()[3].x - 1 && Boxes[i]->GetModel()[3].x <= Car->GetModel()[3].x + 1)
+			{
+				HitCount++;
+			}
+		}
+	}
 
     // Draw with orthographic projection matrix
 

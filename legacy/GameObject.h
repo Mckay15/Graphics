@@ -23,6 +23,8 @@ public:
 	void Movement(glm::vec3 _Position);
 	void Reset();
 	glm::mat4 GetModel() { return model; };
+	int tr_tri_intersect3D(double *C1, double *P1, double *P2,
+		double *D1, double *Q1, double *Q2);
 	GameObject(std::string _Texture, std::string _Obj);
 	GameObject(std::string _Texture, std::string _Obj, std::string _Normal);
 	~GameObject();
