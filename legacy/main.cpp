@@ -61,9 +61,11 @@ int main(int argc, char *argv[])
   shape->SetBuffer("in_TexCoord", texCoords);*/
 
   ShaderProgram *shader = new ShaderProgram("../shaders/simple.vert", "../shaders/simple.frag");
+  ShaderProgram *shader_Normal = new ShaderProgram("../shaders/simple.vert", "../shaders/normal.frag");
   VertexArray *hallShape = new VertexArray("../object/re_hall_baked.obj");
   GameObject *Car = new GameObject("../diffuse/Car_Texture.png","../object/Car.obj");
   GameObject *Box = new GameObject("../textures/box.png", "../object/box.obj");
+  GameObject *Box2 = new GameObject("../textures/box.png", "../object/box.obj","../textures/box_Normal.png");
  // VertexArray *car = new VertexArray("../object/Car.obj");
  // Texture *carTexture = new Texture("../diffuse/Car_Texture.png");
   Texture *hallTexture = new Texture("../diffuse/re_hall_diffuse.png");
@@ -75,9 +77,10 @@ int main(int argc, char *argv[])
   glm::mat4 BoxCoords[2] = { glm::mat4(1.0), glm::mat4(1.0) };
 
   BoxCoords[0] = glm::translate(BoxCoords[0], glm::vec3(0, -2.0f, -8.5f));
-  BoxCoords[1] = glm::translate(BoxCoords[1], glm::vec3( 0, -2.0f, -18.5f ));
+  BoxCoords[1] = glm::translate(BoxCoords[1], glm::vec3(0, -2.0f, -18.5f));
 
   Boxes.push_back(Box);
+  Boxes.push_back(Box2);
 
   bool quit = false;
   float angle = 0;
@@ -152,6 +155,7 @@ int main(int argc, char *argv[])
 	//Camera
 	glm::mat4 model(1.0f);
 	shader->SetUniform("in_View", glm::inverse(model));
+	shader_Normal->SetUniform("in_View", glm::inverse(model));
   //  shader->SetUniform("in_Tangent", glm::mat4(1));
     //glm::mat4 model (1.0f);
     model = glm::translate(model, glm::vec3(0, -2.0f, -8.5f));
@@ -181,6 +185,19 @@ int main(int argc, char *argv[])
 	shader->SetUniform("in_Model", Box->GetModel());
 	shader->SetUniform("in_Texture", Box->GetTexture());
 	shader->draw(Box->GetVAO());
+
+	shader_Normal->SetUniform("in_Projection", glm::perspective(glm::radians(45.0f),
+		(float)windowWidth / (float)windowHeight, 0.1f, 100.f));
+
+	shader_Normal->SetUniform("in_Emissive", glm::vec3(0.1, 0.1, 0.1));
+	shader_Normal->SetUniform("in_Ambient", glm::vec3(0.2, 0.2, 0.2));
+	shader_Normal->SetUniform("in_LightPos", glm::vec3(50, 10, 10));
+
+	Box2->Movement(glm::vec3(-1.0, -2.0f, -28.5f));
+	Box2->Movement(glm::vec3(0, 0.0f, Z_Movement));
+	shader_Normal->SetUniform("in_Model", Box2->GetModel());
+	shader_Normal->SetUniform("in_Texture", Box2->GetTexture());
+	shader_Normal->draw(Box2->GetVAO());
 	//shader->SetUniform("in_NormalMap", normal);
    // shader->draw(shape);
 //	model = glm::translate(model, glm::vec3(0, 0, -8.5f));
@@ -193,6 +210,10 @@ int main(int argc, char *argv[])
 			{
 				HitCount++;
 			}
+		}
+		if (Boxes[i]->GetModel()[3].z >= 15.0f)
+		{
+			quit = true;
 		}
 	}
 
@@ -213,6 +234,7 @@ int main(int argc, char *argv[])
 	time += deltaT;
 	Car->Reset();
 	Box->Reset();
+	Box2->Reset();
   }
 
   SDL_DestroyWindow(window);
