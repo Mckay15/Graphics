@@ -166,29 +166,29 @@ VertexArray::VertexArray(std::string path) : dirty(false)
 	}
 
 	SetBuffer("in_Position", positionBuffer);
-	/*for (int x = 0; x < texCoords.size() - 1; x += 3)
-	{
-		V1 = positions[x];
-		V2 = positions[x + 1];
-		V3 = positions[x + 2];    // for TBN
+	//for (int x = 0; x < positions.size(); x += 3)
+	//{
+	//	V1 = positions[x];
+	//	V2 = positions[x + 1];
+	//	V3 = positions[x + 2];    // for TBN
 
-		UV1 = texCoords[x];
-		UV2 = texCoords[x + 1];
-		UV3 = texCoords[x + 2];
+	//	UV1 = texCoords[x];
+	//	UV2 = texCoords[x + 1];
+	//	UV3 = texCoords[x + 2];
 
-		glm::vec3 deltaPos1 = V2 - V1;
-		glm::vec3 deltaPos2 = V3 - V1;
+	//	glm::vec3 deltaPos1 = V2 - V1;
+	//	glm::vec3 deltaPos2 = V3 - V1;
 
-		glm::vec2 deltaUV1 = UV2 - UV1;
-		glm::vec2 deltaUV2 = UV3 - UV1;
+	//	glm::vec2 deltaUV1 = UV2 - UV1;
+	//	glm::vec2 deltaUV2 = UV3 - UV1;
 
-		float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
-		glm::vec3 Tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y)*r;
-		glm::vec3 Bi = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x)*r;
+	//	float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+	//	glm::vec3 Tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y)*r;
+	//	glm::vec3 Bi = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x)*r;
 
-		tangent.push_back(Tangent);
-		BiTangent.push_back(Bi);
-	}*/
+	//	tangent.push_back(Tangent);
+	//	BiTangent.push_back(Bi);
+	//}
 	if (texCoordBuffer) SetBuffer("in_TexCoord", texCoordBuffer);
 	if (normalBuffer) SetBuffer("in_Normal", normalBuffer);	
 	if (tangentBuffer) SetBuffer("in_Tangent", tangentBuffer);

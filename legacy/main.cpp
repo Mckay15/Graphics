@@ -68,10 +68,10 @@ int main(int argc, char *argv[])
   GameObject *Box2 = new GameObject("../textures/box.png", "../object/box.obj","../textures/box_Normal.png");
  // VertexArray *car = new VertexArray("../object/Car.obj");
  // Texture *carTexture = new Texture("../diffuse/Car_Texture.png");
-  Texture *hallTexture = new Texture("../diffuse/re_hall_diffuse.png");
-  VertexArray *shape = new VertexArray("../object/curuthers.obj");
-  Texture *texture = new Texture("../diffuse/curuthers_diffuse.png");
-  Texture *normal = new Texture("../diffuse/curuthers_normal.png");
+  //Texture *hallTexture = new Texture("../diffuse/re_hall_diffuse.png");
+  //VertexArray *shape = new VertexArray("../object/curuthers.obj");
+  //Texture *texture = new Texture("../diffuse/curuthers_diffuse.png");
+  //Texture *normal = new Texture("../diffuse/curuthers_normal.png");
 
   std::vector <GameObject*> Boxes;
   glm::mat4 BoxCoords[2] = { glm::mat4(1.0), glm::mat4(1.0) };
@@ -197,6 +197,7 @@ int main(int argc, char *argv[])
 	Box2->Movement(glm::vec3(0, 0.0f, Z_Movement));
 	shader_Normal->SetUniform("in_Model", Box2->GetModel());
 	shader_Normal->SetUniform("in_Texture", Box2->GetTexture());
+	shader_Normal->SetUniform("in_NormalMap", Box2->GetNormalMap());
 	shader_Normal->draw(Box2->GetVAO());
 	//shader->SetUniform("in_NormalMap", normal);
    // shader->draw(shape);
