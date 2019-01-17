@@ -3,6 +3,7 @@
 #include "ShaderProgram.h"
 #include "Texture.h"
 #include "GameObject.h"
+#include "FrameBufferObject.h"
 
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
@@ -59,13 +60,14 @@ int main(int argc, char *argv[])
   VertexArray *shape = new VertexArray();
   shape->SetBuffer("in_Position", positions);
   shape->SetBuffer("in_TexCoord", texCoords);*/
-
   ShaderProgram *shader = new ShaderProgram("../shaders/simple.vert", "../shaders/simple.frag");
   ShaderProgram *shader_Normal = new ShaderProgram("../shaders/simple.vert", "../shaders/normal.frag");
+  ShaderProgram *shader_Framebuffer = new ShaderProgram("../shaders/FrameBuffer.vert", "../shaders/FrameBuffer.frag");
   VertexArray *hallShape = new VertexArray("../object/re_hall_baked.obj");
   GameObject *Car = new GameObject("../diffuse/Car_Texture.png","../object/Car.obj");
   GameObject *Box = new GameObject("../textures/box.png", "../object/box.obj");
   GameObject *Box2 = new GameObject("../textures/box.png", "../object/box.obj","../textures/box_Normal.png");
+  FrameBufferObject *FBO = new FrameBufferObject();
  // VertexArray *car = new VertexArray("../object/Car.obj");
  // Texture *carTexture = new Texture("../diffuse/Car_Texture.png");
   //Texture *hallTexture = new Texture("../diffuse/re_hall_diffuse.png");
@@ -87,6 +89,60 @@ int main(int argc, char *argv[])
 
   glEnable(GL_CULL_FACE);
   glEnable(GL_DEPTH_TEST);
+
+  float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+		// positions   // texCoords
+		-1.0f,  1.0f,  0.0f, 1.0f,
+		-1.0f, -1.0f,  0.0f, 0.0f,
+		 1.0f, -1.0f,  1.0f, 0.0f,
+
+		-1.0f,  1.0f,  0.0f, 1.0f,
+		 1.0f, -1.0f,  1.0f, 0.0f,
+		 1.0f,  1.0f,  1.0f, 1.0f
+  };
+
+  unsigned int quadVAO, quadVBO;
+  glGenVertexArrays(1, &quadVAO);
+  glGenBuffers(1, &quadVBO);
+  glBindVertexArray(quadVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+  shader_Framebuffer->SetUniform("screenTexture", 0);
+
+  unsigned int fbo;
+
+  glGenFramebuffers(1, &fbo);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+  unsigned int textureColorbuffer;
+  glGenTextures(1, &textureColorbuffer);
+  glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+
+  unsigned int rbo;
+
+  glGenRenderbuffers(1, &rbo);
+  glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
+  glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+  {
+	  throw std::exception();
+  }
+
+  //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
   while(!quit)
   {
@@ -137,6 +193,9 @@ int main(int argc, char *argv[])
 		  RightKey = false;
 	  }*/
     }
+
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glEnable(GL_DEPTH);
 
 	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 	glViewport(0, 0, windowWidth, windowHeight);
@@ -199,6 +258,18 @@ int main(int argc, char *argv[])
 	shader_Normal->SetUniform("in_Texture", Box2->GetTexture());
 	shader_Normal->SetUniform("in_NormalMap", Box2->GetNormalMap());
 	shader_Normal->draw(Box2->GetVAO());
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glDisable(GL_DEPTH);
+
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	shader_Framebuffer->UseThis();
+	glBindVertexArray(quadVAO);
+	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
 	//shader->SetUniform("in_NormalMap", normal);
    // shader->draw(shape);
 //	model = glm::translate(model, glm::vec3(0, 0, -8.5f));

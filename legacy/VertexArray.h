@@ -15,7 +15,7 @@ private :
 	GLuint id;
 
 	glm::vec3 V1;
-	glm::vec3 V2;
+	glm::vec3 V2;  //These are for TBN matrix
 	glm::vec3 V3;
 	glm::vec2 UV1;
 	glm::vec2 UV2;

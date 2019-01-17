@@ -21,6 +21,8 @@ private:
 public:
 	ShaderProgram();
 
+	void UseThis();
+
 	void printShaderInfoLog(GLuint obj);
 	void printProgramInfoLog(GLuint obj);
 

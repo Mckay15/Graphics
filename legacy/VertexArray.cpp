@@ -170,7 +170,7 @@ VertexArray::VertexArray(std::string path) : dirty(false)
 	//{
 	//	V1 = positions[x];
 	//	V2 = positions[x + 1];
-	//	V3 = positions[x + 2];    // for TBN
+	//	V3 = positions[x + 2];    // for TBN, needs to be revised, goes out of scoop for most models but fortunely is not required in this project
 
 	//	UV1 = texCoords[x];
 	//	UV2 = texCoords[x + 1];
@@ -179,7 +179,7 @@ VertexArray::VertexArray(std::string path) : dirty(false)
 	//	glm::vec3 deltaPos1 = V2 - V1;
 	//	glm::vec3 deltaPos2 = V3 - V1;
 
-	//	glm::vec2 deltaUV1 = UV2 - UV1;
+	//	glm::vec2 deltaUV1 = UV2 - UV1;   
 	//	glm::vec2 deltaUV2 = UV3 - UV1;
 
 	//	float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);

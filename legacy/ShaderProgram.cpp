@@ -356,6 +356,11 @@ void ShaderProgram::SetUniform(std::string uniform, Texture *texture)
 	glUseProgram(0);
 }
 
+void ShaderProgram::UseThis()
+{
+	glUseProgram(id);
+}
+
 GLuint ShaderProgram::getId()
 {
 	return id;
