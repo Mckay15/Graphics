@@ -133,9 +133,7 @@ int main(int argc, char *argv[])
 
   glGenRenderbuffers(1, &rbo);
   glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
-  glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, windowWidth, windowHeight);
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
   if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -265,8 +263,8 @@ int main(int argc, char *argv[])
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	shader_Framebuffer->UseThis();
 	glBindVertexArray(quadVAO);
@@ -274,6 +272,7 @@ int main(int argc, char *argv[])
 	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
+	SDL_GL_SwapWindow(window);
 	//shader->SetUniform("in_NormalMap", normal);
    // shader->draw(shape);
 //	model = glm::translate(model, glm::vec3(0, 0, -8.5f));
@@ -306,7 +305,7 @@ int main(int argc, char *argv[])
 
     angle+=0.01f;
 
-    SDL_GL_SwapWindow(window);
+   // SDL_GL_SwapWindow(window);
 	time += deltaT;
 	Car->Reset();
 	Box->Reset();
