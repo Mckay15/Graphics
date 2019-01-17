@@ -126,6 +126,7 @@ int main(int argc, char *argv[])
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glBindTexture(GL_TEXTURE_2D, 0);
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
 
   unsigned int rbo;
@@ -142,7 +143,10 @@ int main(int argc, char *argv[])
 	  throw std::exception();
   }
 
-  //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+  // wire frame its interesting
+  //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   while(!quit)
   {
@@ -195,12 +199,12 @@ int main(int argc, char *argv[])
     }
 
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-	glEnable(GL_DEPTH);
 
 	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 	glViewport(0, 0, windowWidth, windowHeight);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
 
     // Draw with perspective projection matrix
     shader->SetUniform("in_Projection", glm::perspective(glm::radians(45.0f),
@@ -260,13 +264,13 @@ int main(int argc, char *argv[])
 	shader_Normal->draw(Box2->GetVAO());
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glDisable(GL_DEPTH);
 
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	shader_Framebuffer->UseThis();
 	glBindVertexArray(quadVAO);
+	glDisable(GL_DEPTH_TEST);
 	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
