@@ -112,6 +112,7 @@ int main(int argc, char *argv[])
   glEnableVertexAttribArray(1);
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
+  shader_Framebuffer->UseThis();
   shader_Framebuffer->SetUniform("screenTexture", 0);
 
   unsigned int fbo;
@@ -196,11 +197,11 @@ int main(int argc, char *argv[])
 	  }*/
     }
 
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
 	SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 	glViewport(0, 0, windowWidth, windowHeight);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 
@@ -263,14 +264,15 @@ int main(int argc, char *argv[])
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 
 	shader_Framebuffer->UseThis();
 	glBindVertexArray(quadVAO);
 	glDisable(GL_DEPTH_TEST);
 	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	//glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
 
 	SDL_GL_SwapWindow(window);
 	//shader->SetUniform("in_NormalMap", normal);
